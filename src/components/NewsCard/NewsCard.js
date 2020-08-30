@@ -9,14 +9,18 @@ import {
   Typography,
 } from "@material-ui/core";
 
+import useStyles from "./styles";
+
 const NewsCard = ({
   article: { description, publishedAt, source, title, url, urlToImage },
   i,
 }) => {
+  const classes = useStyles();
   return (
     <Card>
       <CardActionArea>
         <CardMedia
+          className={classes.media}
           image={
             urlToImage ||
             "https://www.abc.net.au/news/linkableblob/8413676/data/abc-news-og-data.jpg"

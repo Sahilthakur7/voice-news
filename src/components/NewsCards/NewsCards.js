@@ -22,7 +22,7 @@ const NewsCards = ({ articles }) => {
     <Grow in>
       <Grid
         container
-        className={classes.conatiner}
+        className={classes.container}
         alignItems="stretch"
         spacing="3"
       >

@@ -40,3 +40,20 @@ intent("Give me the news from $(source* (.*))", (p) => {
     );
   });
 });
+
+intent("Give me the latest news from India", (p) => {
+  let newsAPIUrl = `http://newsapi.org/v2/top-headlines?country=in&apiKey=${NEWS_API_KEY}`;
+
+  api.request(newsAPIUrl, (err, res, body) => {
+    const { articles } = JSON.parse(body);
+
+    if (!articles.length) {
+      p.play("Sorry, could not find news from India");
+      return;
+    }
+    savedArticles = articles;
+
+    p.play({ command: "newHeadlines", savedArticles });
+    p.play(`Here is the (latest|recent) news from India`);
+  });
+});
