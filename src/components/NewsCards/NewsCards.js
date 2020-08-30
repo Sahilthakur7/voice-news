@@ -26,8 +26,8 @@ const NewsCards = ({ articles }) => {
           item
           xs={12}
           sm={6}
-          md={4}
-          lg={4}
+          md={3}
+          lg={3}
           className={classes.infoCard}
           style={{ display: "flex" }}
         >
