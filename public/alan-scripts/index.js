@@ -41,6 +41,66 @@ intent("Give me the news from $(source* (.*))", (p) => {
   });
 });
 
+//News By Source
+intent("What's new with $(term* (.*))", (p) => {
+  let newsAPIUrl = `https://newsapi.org/v2/everything?apiKey=${NEWS_API_KEY}`;
+
+  if (p.term.value) {
+    newsAPIUrl = `${newsAPIUrl}&q=${p.term.value}`;
+  }
+
+  api.request(newsAPIUrl, (err, res, body) => {
+    const { articles } = JSON.parse(body);
+
+    if (!articles.length) {
+      p.play("Sorry, please try searching for news for a different thing.");
+      return;
+    }
+    savedArticles = articles;
+
+    p.play({ command: "newHeadlines", savedArticles });
+    p.play(`This is what is going on for ${p.term.value}`);
+  });
+});
+
+//Search by category
+const CATEGORIES = [
+  "business",
+  "entertainment",
+  "general",
+  "health",
+  "science",
+  "sports",
+  "football",
+  "technology",
+];
+const CATEGORIES_INTENT = `${CATEGORIES.map(
+  (category) => `${category}~${category}`
+).join("|")}|`;
+
+intent(`come on $(C~ ${CATEGORIES_INTENT}) news`, (p) => {
+  let newsAPIUrl = `https://newsapi.org/v2/top-headlines?apiKey=${NEWS_API_KEY}`;
+
+  if (p.C.value) {
+    newsAPIUrl = `${newsAPIUrl}&category=${p.C.value}&country=in`;
+  }
+
+  api.request(newsAPIUrl, (err, res, body) => {
+    const { articles } = JSON.parse(body);
+
+    if (!articles.length) {
+      p.play("Sorry, please try searching for news for a different category.");
+      return;
+    }
+    savedArticles = articles;
+
+    p.play({ command: "newHeadlines", savedArticles });
+    p.play(`This is the latest news in the field of ${p.C.value}`);
+  });
+});
+
+//News by term
+
 intent("Give me the latest news from India", (p) => {
   let newsAPIUrl = `http://newsapi.org/v2/top-headlines?country=in&apiKey=${NEWS_API_KEY}`;
 
