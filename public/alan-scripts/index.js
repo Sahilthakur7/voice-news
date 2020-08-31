@@ -38,6 +38,9 @@ intent("Give me the news from $(source* (.*))", (p) => {
     p.play(
       `Here are the (latest|recent) news headlines from ${p.source.value}`
     );
+
+    p.play("Would you like me to read the headlines ?");
+    p.then(confirmation);
   });
 });
 
@@ -60,6 +63,9 @@ intent("What's new with $(term* (.*))", (p) => {
 
     p.play({ command: "newHeadlines", savedArticles });
     p.play(`This is what is going on for ${p.term.value}`);
+
+    p.play("Would you like me to read the headlines ?");
+    p.then(confirmation);
   });
 });
 
@@ -78,7 +84,7 @@ const CATEGORIES_INTENT = `${CATEGORIES.map(
   (category) => `${category}~${category}`
 ).join("|")}|`;
 
-intent(`come on $(C~ ${CATEGORIES_INTENT}) news`, (p) => {
+intent(`Give me the latest $(C~ ${CATEGORIES_INTENT}) news`, (p) => {
   let newsAPIUrl = `https://newsapi.org/v2/top-headlines?apiKey=${NEWS_API_KEY}`;
 
   if (p.C.value) {
@@ -96,10 +102,13 @@ intent(`come on $(C~ ${CATEGORIES_INTENT}) news`, (p) => {
 
     p.play({ command: "newHeadlines", savedArticles });
     p.play(`This is the latest news in the field of ${p.C.value}`);
+
+    p.play("Would you like me to read the headlines ?");
+    p.then(confirmation);
   });
 });
 
-//News by term
+//News from India
 
 intent("Give me the latest news from India", (p) => {
   let newsAPIUrl = `http://newsapi.org/v2/top-headlines?country=in&apiKey=${NEWS_API_KEY}`;
@@ -115,5 +124,31 @@ intent("Give me the latest news from India", (p) => {
 
     p.play({ command: "newHeadlines", savedArticles });
     p.play(`Here is the (latest|recent) news from India`);
+
+    p.play("Would you like me to read the headlines ?");
+    p.then(confirmation);
+  });
+});
+
+intent("(go|) back", (p) => {
+  p.play({ command: "newHeadlines", savedArticles: [] });
+});
+
+intent("Open article number $(number* (.*))", (p) => {
+  if (p.number.value) {
+    p.play({ command: "open", number: p.number.value, savedArticles });
+  }
+});
+
+const confirmation = context(() => {
+  intent("Yes", async (p) => {
+    for (let i = 0; i < savedArticles.length; i++) {
+      p.play({ command: "highlight", article: savedArticles[i] });
+      p.play(`${savedArticles[i].title}`);
+    }
+  });
+
+  intent("No", (p) => {
+    p.play("Okay, as you wish");
   });
 });
