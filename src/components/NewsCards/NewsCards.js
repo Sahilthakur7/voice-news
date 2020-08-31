@@ -6,13 +6,13 @@ import { Grid, Grow, Typography } from "@material-ui/core";
 
 import { infoCards } from "../../constants/infoCards";
 
-const NewsCards = ({ articles }) => {
+const NewsCards = ({ articles, activeArticle }) => {
   const classes = useStyles();
   const renderNewsCards = () => {
     const newsCards = articles.map((el, index) => {
       return (
         <Grid item xs={12} sm={6} md={4} lg={3} style={{ display: "flex" }}>
-          <NewsCard article={el} i={index} />
+          <NewsCard article={el} activeArticle={activeArticle} i={index} />
         </Grid>
       );
     });
